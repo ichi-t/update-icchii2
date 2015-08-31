@@ -1,0 +1,2 @@
+class UpdateNameController < ApplicationController
+end
