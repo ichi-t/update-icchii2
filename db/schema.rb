@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150908093335) do
+ActiveRecord::Schema.define(version: 20150908094718) do
 
   create_table "update_tweets", force: :cascade do |t|
     t.text     "update_name"
