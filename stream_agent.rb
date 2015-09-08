@@ -24,20 +24,21 @@ client = Twitter::Streaming::Client.new(config)
 client.user do |status|
 
   if status.is_a?(Twitter::Tweet)
-    next if status.text.start_with? "RT","@","＠"
+    next if status.text.start_with? "RT","@","＠" || status.text =~ /[@＠]/
     # p status.user.protected?
     
     url = URI.parse('http://localhost:3000/update_name')
-
-    if status.text.end_with?("っちー")
+    p status.user.id
       begin
-        Net::HTTP.post_form(url,popdata(status))
+        # Net::HTTP.post_form(url,popdata(status))
       rescue => e
         p "timeout"
         p e.message
       ensure
         next
       end
+    if status.text.end_with?("っちー")
+
     end
   end
 end
