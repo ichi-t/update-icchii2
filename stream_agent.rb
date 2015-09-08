@@ -15,7 +15,7 @@ def popdata(status)
   test["status_id"] = status.id
   test["update_name"] = status.text
   test["screen_name"] = status.user.screen_name
-
+  test["user_protected?"] = status.user.protected?
   p test
 end
 
@@ -25,15 +25,19 @@ client.user do |status|
 
   if status.is_a?(Twitter::Tweet)
     next if status.text.start_with? "RT","@","＠"
-    # p status.text if status.lang == "ja"
-    # p status.user.screen_name
+    # p status.user.protected?
     
     url = URI.parse('http://localhost:3000/update_name')
-    Net::HTTP.post_form(url,popdata(status))
-    
 
     if status.text.end_with?("っちー")
-      
+      begin
+        Net::HTTP.post_form(url,popdata(status))
+      rescue => e
+        p "timeout"
+        p e.message
+      ensure
+        next
+      end
     end
   end
 end
