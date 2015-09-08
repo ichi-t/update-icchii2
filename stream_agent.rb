@@ -1,22 +1,47 @@
 # coding: utf-8
 require 'twitter'
-require 'tweetstream'
 require 'net/http'
+require '~/myscripts/keys.rb'
 
+config = {
+  :consumer_key => CONSUMER_KEY,
+  :consumer_secret => CONSUMER_SECRET,
+  :access_token => ACCESS_TOKEN,
+  :access_token_secret => ACCESS_TOKEN_SECRET,
+}
 
-def makedata()
+def popdata(status)
   test = {}
-  test["status_id"] = '12390-1237012'
-  test["update_name"] = 'おっぱい'
-  test["screen_name"] = 'うん犬'
+  test["status_id"] = status.id
+  test["update_name"] = status.text
+  test["screen_name"] = status.user.screen_name
 
-  test
+  p test
 end
 
-url = URI.parse('http://localhost:3000/update_name')
+
+client = Twitter::Streaming::Client.new(config)
+client.user do |status|
+
+  if status.is_a?(Twitter::Tweet)
+    next if status.text.start_with? "RT","@","＠"
+    # p status.text if status.lang == "ja"
+    # p status.user.screen_name
+    
+    url = URI.parse('http://localhost:3000/update_name')
+    Net::HTTP.post_form(url,popdata(status))
+    
+
+    if status.text.end_with?("っちー")
+      
+    end
+  end
+end
 
 
-res = Net::HTTP.post_form(url,makedata())
-# Net::HTTP.get_print(url)
-p res
+
+
+
+# # Net::HTTP.get_print(url)
+# p res
 
